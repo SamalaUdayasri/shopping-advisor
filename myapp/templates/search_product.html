@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+
+  html,body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, Sans-serif;
+    background-color:rgb(27, 27, 47);
+    animation: drop 1.0s ease; 
+    }
+
+  .col-half-offset{
+      margin-left:4.166666667%
+      width: 10%;
+  }
+
+  .card {
+    {% comment %} margin-top: 5px; {% endcomment %}
+    position: relative; 
+    left: 50%;
+    transform: translateX(-50%);
+    max-heigth: 410px;
+    border: 1px solid #ff6e4e;
+    box-shadow: 0 0 10px 3px #ff6e4e;
+  }
+   {% comment %} .card:first-of-type {
+    margin-right: 1em;
+  }  {% endcomment %}
+  img {
+    width: 800px;
+    height: 800px;
+    max-width: 300px;
+    padding: 5px;
+
+  }
+  
+  /* card with triangle */
+  .triangle-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }   
+  .triangle {
+    float: right;
+    position: relative;
+    border-style: solid;
+    border-width: 0 105px 105px 0;
+    border-color: transparent #f5431a transparent transparent;
+    text-align: center;
+  }    
+  .triangle-text {
+    display: block;
+    position: absolute;
+    top: 20px;
+    right: -105px;
+    text-transform: uppercase;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+  }
+  
+  /* card with ribbon */
+  .ribbon {
+    position: absolute;
+    right: 0; top: 0px;
+    z-index: 1;
+    overflow: hidden;
+    width: 100px; 
+    height: 100px;
+    text-align: right;
+  }
+  
+  /* card with ribbon */
+  .ribbon span {
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 25px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    width: 115px;
+    display: block;
+    background: green;
+    color:white;
+    box-shadow: 0 0 10px 3px #ff6e4e;
+    position: absolute;
+    top: 20px; right: -25px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: flex-start;
+  }
+
+  .price-box-b {
+    padding: 15px 25px;
+    margin: 10px;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+    outline: none;
+    color: #fff;
+    background-color: blue;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .price-box-b:hover {background-color: #11d0ff}
+
+  .content {
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+  }
+
+  .form-control {
+    width: 100%;
+    border: 3px solid grey;
+    margin: 10px;
+    padding: 5px;
+    height: 20px;
+    border-radius: 5px 5px 5px 5px;
+    outline: none;
+    color: #00000;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+
+.btn-s{
+  width: 100px;
+  color: rgb(22, 146, 155);
+  font-size: 15px;
+  padding: 12px 0px;
+  background: #fff;
+  border: none;
+  border-radius: 20px;
+  margin-left: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.btn-s:hover{ background-color: blue }
+.price-box mb-3, .card-title {
+  color: #11d0ff
+}
+</style>
+
+<section class="section">
+    <div class="container">
+    <h3>Search Product</h3><hr>
+        <div class="form">
+            <form class="form-a" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+              <div class="row">
+                <div class="col-md-10 mb-2">
+                  <div class="form-group">
+                    <label class="s-n" for="Type" style="margin: 10px; color: white;">Search(with name)</label>
+                    <input type="text" class="form-control" placeholder="Search Product" value="{{request.POST.search}}" name="search">
+                  </div>
+                  <button type="submit" target="_blank" class="btn-s">search</button>
+                </div>
+              </div>
+            </form>
+        </div>
+        <h6 class="mt-4">Search Product with "({{request.POST.search}})"</h6><hr>
+        <div class="form">
+    <section class="section-property">
+        <div class="container">
+          <div id="property-carousel" class="swiper">
+            <div class="row">
+
+              {% for i in data %}
+
+              <div class="col-md-2 {% if forloop.counter > 1 %}col-half-offset{% endif %}">
+                <img src="{{i.logo}}" style="width:100%;height:40px; margin-top: 5px;"/>
+                <div class="card-box-a box">
+                  <div class="img-box-a {% if forloop.counter == 1 %} card {% endif %}">
+                    {% if forloop.counter == 1 %}
+                      <div class="ribbon">
+                        <span>lowest!</span>
+                      </div>
+                    {% endif %}
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal-{{forloop.counter}}" style="width:100%">
+                      <img src="{{i.image}}" alt="" class="img-thumbnail" style="width:300px;height:300px;">
+                    </button>
+                  </div>
+                </div>
+                <div class="card">
+                    <div class="content">
+                      <div class="card-header" style="height:100% ">
+                        <h4 class="card-title" >
+                          <a href="{{i.link}}" style="color: white">
+                            {{i.name}}
+                          </a>
+                        </h4>
+                        <div class="price-box mb-3">
+                            <strong><span class="price" style="color: white">Price | {{i.price}}</span></strong>
+                        </div>
+                        <a href="{{i.link}}" target="_blank">
+                          <button class="price-box-b">Book Now</button>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+    </section>
+    </div>
+</div>
+
+<script>
+  // Get the modal
+  var modal = document.getElementById("myModal");
+  
+  // Get the button that opens the modal
+  var btn = document.getElementById("myBtn");
+  
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+  
+  // When the user clicks the button, open the modal 
+  btn.onclick = function() {
+    modal.style.display = "block";
+  }
+  
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+  </script>
+{% endblock  %} 
